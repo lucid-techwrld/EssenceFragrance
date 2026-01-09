@@ -48,6 +48,45 @@ paths:
           description: Logged in successfully
         400:
           description: Validation error
+
+  /api/auth/logout:
+    get:
+      tags:
+        - Auth
+      summary: Logout your account
+        content:
+          application/json:
+      responses:
+        200:
+          description: Logged out successfully
+        400:
+          description: Validation error
+
+  /api/auth/user:
+    get:
+      tags:
+        - Users
+      summary: Fetched user informations
+        content:
+          application/json:
+      responses:
+        200:
+          description: User details fetched successfully
+        400:
+          description: Validation error
+
+  /api/auth/refresh:
+    get:
+      tags:
+        - Auth
+      summary: Refresh Token
+        content:
+          application/json:
+      responses:
+        200:
+          description: Token generated successfully
+        400:
+          description: Validation error
 components:
   schemas:
     RegisterUser:

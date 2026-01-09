@@ -1,7 +1,7 @@
 import PasswordSecurity from "../utils/bcrypt"
 import {CreateUserDTO, LoginDTO} from "../schema/user.dto"
 import type {TokenPayload} from "../utils/generate.token"
-import {generateToken} from "../utils/generate.token"
+import {generateToken, generateRefreshToken, verifyToken} from "../utils/generate.token"
 import AppError from "../middlewares/errors/error"
 import User from "../models/user.model"
 
@@ -25,7 +25,7 @@ class UserService {
         if(!credentials.email || !credentials.password) {
             throw new AppError("Please enter email and password to login")
         }
-        const user = await this.findByEmail(credentials.email)
+        const user = await this.findByEmail(credentials.email, true)
         const isMatch = await PasswordSecurity.decrypt(user.password, credentials.password)
 
         if(!isMatch) {
@@ -35,22 +35,41 @@ class UserService {
             userId: user._id.toString(),
             email: user.email
         }
-        const token = generateToken(payload)
-        if(!token || token === "undefined") {
+        const accessToken = generateToken(payload)
+        const refreshToken = generateRefreshToken(payload)
+        if(!accessToken || accessToken === "undefined" || !refreshToken || refreshToken === "undefined") {
             throw new AppError("Failed to generate token, please try again")
         }
-        return token
+        return {accessToken, refreshToken}
     }
 
-    async findByEmail(email: string) {
+    async fetchUserInfo(email: string){
+        const userInfo = await this.findByEmail(email, false)
+        return userInfo
+    }
+
+    async findByEmail(email: string, showPassword: boolean = false) {
         if(!email) {
             throw new AppError("Please add email address and try again")
         }
-        const user = await User.findOne({email});
+        const user = await User.findOne({email}).select(showPassword ? '+password' : '-password');
         if(!user) {
             throw new AppError("User does not exist, please create an account and try agin", 404)
         }
         return user
+    }
+
+    async refreshToken(token: string) {
+        const JWT_SECRET = process.env.JWT_REFRESH_SECRET!;
+         if (!token) {
+            throw new AppError("Unauthorized, invalid or expired token", 403);
+        }
+        const decoded = verifyToken(token, JWT_SECRET)
+        if(!decoded){
+            throw new AppError("Invalid refresh token", 403)
+        }
+        const newAccessToken = generateToken({userId: decoded.userId, email: decoded.email})
+        return newAccessToken;
     }
 }
 
