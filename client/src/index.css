@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer components {
+    .header {
+    @apply w-full h-16 bg-white p-3 grid grid-cols-3 items-center gap-4 fixed top-0 z-50
+}
+ .hero-col {
+     @apply bg-blue-300 w-full h-full grid grid-cols-2 overflow-hidden
+}
+
+ .hero {
+     @apply bg-blue-300 w-full h-full
+}
+}
