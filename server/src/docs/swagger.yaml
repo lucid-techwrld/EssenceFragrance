@@ -1,4 +1,5 @@
 openapi: 3.0.0
+
 info:
   title: Essence Enclave API
   description: API documentation for Essence Enclave backend
@@ -13,6 +14,10 @@ tags:
     description: Authentication endpoints
   - name: Users
     description: User management
+  - name: Products
+    description: Products management
+  - name: Cart
+    description: Cart management
 
 paths:
   /api/auth/register:
@@ -54,8 +59,6 @@ paths:
       tags:
         - Auth
       summary: Logout your account
-        content:
-          application/json:
       responses:
         200:
           description: Logged out successfully
@@ -67,8 +70,6 @@ paths:
       tags:
         - Users
       summary: Fetched user informations
-        content:
-          application/json:
       responses:
         200:
           description: User details fetched successfully
@@ -80,15 +81,88 @@ paths:
       tags:
         - Auth
       summary: Refresh Token
-        content:
-          application/json:
       responses:
         200:
           description: Token generated successfully
         400:
           description: Validation error
+
+  /api/products/all:
+    get:
+      tags:
+        - Products
+      summary: Fetch all products in db
+      responses:
+        200:
+          description: Products fetched successfully
+        400:
+          description: Product not found
+
+  /api/products/{productId}:
+    get:
+      tags:
+        - Products
+      summary: Get a product by its ID
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+          description: Product ID
+      responses:
+        200:
+          description: Product fetched successfully
+        404:
+          description: Product not found
+
+  /api/cart/add:
+    post:
+      tags:
+        - Cart
+      summary: Add item(s) to cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Cart"
+      responses:
+        200:
+          description: Item(s) added to cart successfully
+        404:
+          description: Unable to add item to the cart
+
 components:
   schemas:
+    CartItem:
+      type: object
+      required:
+        - product
+        - quantity
+      properties:
+        product:
+          type: string
+          minLength: 1
+        quantity:
+          type: number
+          minimum: 1
+          default: 1
+
+    Cart:
+      type: object
+      required:
+        - item
+      properties:
+        item:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CartItem'
+        totalPrice:
+          type: number
+          minimum: 0
+
     RegisterUser:
       type: object
       required:
@@ -125,4 +199,5 @@ components:
         password:
           type: string
           example: secret123
+
 

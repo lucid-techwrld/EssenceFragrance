@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-    password: { type: String, required: true },
+    password: { type: String, select: false, required: true },
 
     address: { type: String },
 
@@ -26,5 +26,7 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+
 
 export default mongoose.model("User", userSchema);

@@ -17,7 +17,6 @@ class UserService {
         }
         const user = await User.create({...userData, password: hashedPassword})
         const {password, ...newUser} = user.toObject()
-        console.log("UserInfo:", newUser)
         return newUser
     };
 

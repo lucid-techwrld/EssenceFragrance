@@ -7,7 +7,7 @@ import {SendCookie, SendRefreshCookie} from "../utils/cookies"
 
 
 
-const UserServices = new UserService
+const UserServices = new UserService()
 
 
 interface UserRequest extends Request {

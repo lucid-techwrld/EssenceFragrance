@@ -10,6 +10,9 @@ import path from "path"
 import {errorMiddleware} from "./middlewares/errors/error.middleware";
 import connectDB from "./config/db";
 import UserRoute from "./routers/user.route"
+import ProductRoutes from "./routers/product.route"
+import CartRoutes from "./routers/cart.routes"
+
 
 const app = express();
 
@@ -36,6 +39,9 @@ app.use(
 connectDB()
 
 app.use("/api/auth", UserRoute)
+app.use("/api/products", ProductRoutes)
+app.use("/api/cart", CartRoutes)
+
 app.use(errorMiddleware)
 
 export default app;
