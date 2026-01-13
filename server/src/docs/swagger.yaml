@@ -149,19 +149,18 @@ components:
           minimum: 1
           default: 1
 
+
     Cart:
       type: object
       required:
         - item
       properties:
-        item:
+        items:
           type: array
           minItems: 1
           items:
             $ref: '#/components/schemas/CartItem'
-        totalPrice:
-          type: number
-          minimum: 0
+
 
     RegisterUser:
       type: object

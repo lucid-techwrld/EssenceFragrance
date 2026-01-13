@@ -1,11 +1,13 @@
 import Cart from "../models/cart.model"
 import User from "../models/user.model"
+import Product from "../models/product.model"
 import AppError from "../middlewares/errors/error"
+
+
 
 export type ItemType = {
     product: string;
     quantity: number;
-    price: number
 }
 
 export interface CartInput {
@@ -16,34 +18,69 @@ export interface CartInput {
 }
 
 class CartService {
-    async addItems(items: CartInput) {
-        if(!items) {
-            throw new AppError("Cart is empty", 400)
+    async addItemsToCart(
+    userId: string,
+    incomingItems: ItemType[]
+    ) {
+        let cart = await Cart.findOne({ userId })
+
+        if (!cart) {
+            const { totalPrice, totalQuantity } = await this.calculateTotalPrice(incomingItems)
+
+            return Cart.create({
+                userId,
+                items: incomingItems,
+                totalPrice,
+                totalQuantity
+            })
         }
-        const user = await User.findOne({_id: items.userId})
-        if(!user) {
-            throw new AppError("User adding item(s) to cart does not exist", 404)
+
+        for (const item of incomingItems) {
+            const existingItem = cart.items.find(
+                i => i.product.toString() === item.product
+            )
+
+            if (existingItem) {
+                existingItem.quantity += item.quantity
+            } else {
+                cart.items.push(item)
+            }
         }
-        console.log(user)
-        const cartItems = await Cart.create(items)
-        return cartItems;
+
+        const normalizedItems: ItemType[] = cart.items.map(item => ({
+            product: item.product.toString(),
+            quantity: item.quantity
+        }))
+
+        const { totalPrice, totalQuantity } = await this.calculateTotalPrice(normalizedItems)
+
+
+        cart.totalPrice = totalPrice
+        cart.totalQuantity = totalQuantity
+
+        await cart.save()
+        return cart
     }
+
 
     async calculateTotalPrice(items: ItemType[]) {
-        const totalItemPrice = items.map((item, idx)=> {
-            return item.price * item.quantity
-        })
-        const totalPrice = totalItemPrice.reduce((accumulator, item) => {
-            return accumulator += item
-        })
+    let totalPrice = 0
+    let totalQuantity = 0
 
-        const totalQuantity = items.reduce((accumulator, item) => {
-            return accumulator += item.quantity
-        }, 0)
+    for (const item of items) {
+        const product = await Product.findById(item.product)
+        if (!product) {
+            throw new AppError("Product not found", 404)
+        }
 
-        return {totalPrice, totalQuantity}
+        totalPrice += product.price * item.quantity
+        totalQuantity += item.quantity
     }
+
+    return { totalPrice, totalQuantity }
 }
+}
+
 
 const cartServices = new CartService
 export default cartServices;
