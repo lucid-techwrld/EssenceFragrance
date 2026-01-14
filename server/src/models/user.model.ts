@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
     paymentMethod: {
       type: String,
       enum: ["CREDIT_CARD", "TRANSFER", "CASH"],
+      default: "CREDIT_CARD"
     },
   },
   { timestamps: true }

@@ -18,10 +18,10 @@ function ProductShowCase () {
                     <li>FLORAL</li>
                 </ul>
                 <div className="w-full h-full max-w-6xl  grid grid-cols-4 gap-5 justify-items-center">
-                    <ProductCard image={perfume1} label="Velvet Bloom" price={18500}/>
-                    <ProductCard image={perfume2} label="Amber Drift" price={22000} prevPrice={23500}/>
-                    <ProductCard image={perfume3} label="Noir Essence" price={19750}/>
-                    <ProductCard image={perfume4} label="Luna Whisper" price={16900} prevPrice={17250}/>
+                    <ProductCard images={[perfume1]} name="Velvet Bloom" price={18500}/>
+                    <ProductCard images={[perfume2]} name="Amber Drift" price={22000} prevPrice={23500}/>
+                    <ProductCard images={[perfume3]} name="Noir Essence" price={19750}/>
+                    <ProductCard images={[perfume4]} name="Luna Whisper" price={16900} prevPrice={17250}/>
                 </div>
 
                 <div className="w-full h-full max-w-6xl  grid grid-cols-2 gap-5 justify-items-center">

@@ -1,7 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import image from "../assets/images/perfume6.webp"
-import products from "store/products"
 import ProductCard from "../components/product.card"
+import { useProductStore } from "../store/product.store"
+
+
 
 function Product() {
     const productCategories: string[] = [
@@ -15,6 +17,12 @@ function Product() {
     const [activeCategory, setActiveCategory] = useState<string>(
         productCategories[0]
     )
+
+       const { products, fetchProducts, isLoading } = useProductStore()
+
+    useEffect(() => {
+        fetchProducts()
+    }, [])
 
     return (
         <div className="w-full">
@@ -50,18 +58,25 @@ function Product() {
                     </li>
                 ))}
             </ul>
-
             {/* Products Grid */}
-            <div className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-8 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {products.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        label={product.label}
-                        price={product.price}
-                        oldPrice={product.oldPrice}
-                    />
-                ))}
-            </div>
+            {isLoading ?
+                <p>Loading products...</p>
+            :
+                <div className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-8 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                    {products.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            name={product.name}
+                            price={product.price}
+                            prevPrice={product.price + 27.4}
+                            images={product.imageUrl}
+                        />
+                    ))}
+                </div>
+
+            }
+
+
         </div>
     )
 }

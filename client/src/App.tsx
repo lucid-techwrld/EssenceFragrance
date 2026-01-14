@@ -4,6 +4,7 @@ import Home from "./pages/home"
 import Login from "./pages/login"
 import SignUp from "./pages/signup"
 import OTP from "./pages/otp"
+import Products from "./pages/product"
 import {Routes, Route} from "react-router"
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route index element={<SignUp/>}/>
           <Route path="verify_otp" element={<OTP/>}/>
         </Route>
+        <Route path="/products" element={<Products/>}/>
       </Route>
 
     </Routes>
