@@ -26,7 +26,7 @@ class CartController {
             }*/
             const cartItems = await cartServices.addItemsToCart(userId, validatedItems.items)
             console.log(cartItems)
-            return SendResponse(res, "Items added to cart successfully", true, 200)
+            return SendResponse(res, "Items added to cart successfully", true, 200, cartItems)
         } catch(err) {
             next(err)
         }
