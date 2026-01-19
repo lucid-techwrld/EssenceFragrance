@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 import image from "../assets/images/perfume6.webp"
 import ProductCard from "../components/product.card"
 import { useProductStore } from "../store/product.store"
+import ViewProduct from '../components/view.product'
+import type {Product} from "../types/product.types"
 
 
 
@@ -13,6 +15,8 @@ function Product() {
         "WOODY",
         "FLORAL",
     ]
+
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
     const [activeCategory, setActiveCategory] = useState<string>(
         productCategories[0]
@@ -70,12 +74,21 @@ function Product() {
                             price={product.price}
                             prevPrice={product.price + 27.4}
                             images={product.imageUrl}
+                            onClick={() => setSelectedProduct(product)}
                         />
                     ))}
                 </div>
-
             }
-
+            {selectedProduct && (
+                <ViewProduct
+                    product={selectedProduct}
+                    onClose={() => setSelectedProduct(null)}
+                    onAddToCart={(id, qty) => {
+                        //addToCart(id, qty)
+                        setSelectedProduct(null)
+                    }}
+                />
+            )}
 
         </div>
     )

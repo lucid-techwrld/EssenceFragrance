@@ -1,31 +1,52 @@
-import React from "react"
-
-interface ProductProps  {
-    images: string[];
-    name: string;
-    price: number;
+interface ProductProps {
+    images: string[]
+    name: string
+    price: number
     prevPrice?: number
+    onClick: () => void
 }
-const ProductCard: React.FC<ProductProps> = ({images, name, price, prevPrice}) => {
 
-    const formatPrice = (amt: number): string => {
-        return amt.toLocaleString()
-    }
-    const imageSrc = images.length > 0 ? images[0] : "/placeholder.png"
+function ProductCard({
+    images,
+    name,
+    price,
+    prevPrice,
+    onClick,
+}: ProductProps) {
+    const formatPrice = (amt: number): string =>
+        amt.toLocaleString()
+
+    const imageSrc =
+        images.length > 0 ? images[0] : "/placeholder.png"
+
     return (
-        <div className="w-full h-auto">
-            <div className="w-full h-[70%]">
-                <img src={imageSrc} className="w-full h-full object-cover"/>
+        <div
+            onClick={onClick}
+            className="w-full cursor-pointer overflow-hidden rounded-md transition hover:shadow-lg"
+        >
+            <div className="h-64 w-full bg-gray-100">
+                <img
+                    src={imageSrc}
+                    alt={name}
+                    className="h-full w-full object-cover"
+                />
             </div>
 
-            <div className="w-full h-[30%]">
-            <p className="font-italia text-2xl text-center font-bold">{name}</p>
-            {prevPrice && <p className="text-sans  text-center text-sm line-through text-red-400">₦{formatPrice(prevPrice)}</p>}
-            <p className="text-sans  text-center text-sm">₦{formatPrice(price)}</p>
-            </div>
+            <div className="space-y-1 p-3 text-center">
+                <p className="text-lg font-bold">{name}</p>
 
+                {prevPrice && (
+                    <p className="text-sm text-red-400 line-through">
+                        ₦{formatPrice(prevPrice)}
+                    </p>
+                )}
+
+                <p className="text-sm font-medium">
+                    ₦{formatPrice(price)}
+                </p>
+            </div>
         </div>
     )
 }
 
-export default ProductCard;
+export default ProductCard
